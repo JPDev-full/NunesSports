@@ -3,7 +3,7 @@
 body {
     font-family: 'Arial', sans-serif;
     background-color: #4c4c4d;
-    background-image: url('E:\\Nunes Sports\\cadastro-produtos\\public\\6927689.jpg');
+    background-image: url('./fundo.jpg');
     background-size: cover;
     background-position: center center;
     color: #f1f1f6;
