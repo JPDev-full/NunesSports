@@ -1,15 +1,15 @@
-// backend/index.js
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path'); // Adicionando módulo 'path' para manipulação de caminhos
 
 const app = express();
-const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
 
-const db = new sqlite3.Database(':memory:');
+const dbPath = path.join(__dirname, 'database.db'); // Caminho para o arquivo de banco de dados
+const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
   db.run(`
@@ -77,6 +77,5 @@ app.delete('/produtos/:id', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+module.exports = app;
+

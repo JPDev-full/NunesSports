@@ -46,7 +46,7 @@ const CadastroProduto = () => {
 
   const handleUpdateProduto = async () => {
     try {
-      await axios.put(`https://nunes-sports-opal.vercel.app//produtos/${editingId}`, {
+      await axios.put(`https://nunes-sports-opal.vercel.app/produtos/${editingId}`, {
         nome,
         descricao,
         preco,
