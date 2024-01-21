@@ -17,7 +17,7 @@ const CadastroProduto = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/produtos');
+      const response = await axios.get('https://nunes-sports-opal.vercel.app//produtos');
       setProdutos(response.data);
     } catch (error) {
       console.error('Erro ao obter produtos:', error);
@@ -26,7 +26,7 @@ const CadastroProduto = () => {
 
   const handleAddProduto = async () => {
     try {
-      await axios.post('http://localhost:3001/produtos', {
+      await axios.post('https://nunes-sports-opal.vercel.app//produtos', {
         nome,
         descricao,
         preco,
@@ -46,7 +46,7 @@ const CadastroProduto = () => {
 
   const handleUpdateProduto = async () => {
     try {
-      await axios.put(`http://localhost:3001/produtos/${editingId}`, {
+      await axios.put(`https://nunes-sports-opal.vercel.app//produtos/${editingId}`, {
         nome,
         descricao,
         preco,
@@ -63,7 +63,7 @@ const CadastroProduto = () => {
 
   const handleDeleteProduto = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/produtos/${id}`);
+      await axios.delete(`https://nunes-sports-opal.vercel.app//produtos/${id}`);
       fetchData();
     } catch (error) {
       console.error('Erro ao excluir produto:', error);
