@@ -1,81 +1,66 @@
 const express = require('express');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path'); // Adicionando módulo 'path' para manipulação de caminhos
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const dbPath = path.join(__dirname, 'database.db'); // Caminho para o arquivo de banco de dados
-const db = new sqlite3.Database(dbPath);
-
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS produtos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT,
-      descricao TEXT,
-      preco REAL
-    )
-  `);
-});
+const produtos = [];
 
 app.get('/produtos', (req, res) => {
-  db.all('SELECT * FROM produtos', (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json(rows);
-  });
+  res.json(produtos);
 });
 
 app.post('/produtos', (req, res) => {
   const { nome, descricao, preco } = req.body;
 
-  db.run(
-    'INSERT INTO produtos (nome, descricao, preco) VALUES (?, ?, ?)',
-    [nome, descricao, preco],
-    function (err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.json({ id: this.lastID });
-    }
-  );
+  const novoProduto = {
+    id: produtos.length + 1, // Gerar um ID simples (pode ser melhorado para evitar colisões)
+    nome,
+    descricao,
+    preco,
+  };
+
+  produtos.push(novoProduto);
+
+  res.json({ id: novoProduto.id });
 });
 
 app.put('/produtos/:id', (req, res) => {
   const { id } = req.params;
   const { nome, descricao, preco } = req.body;
 
-  db.run(
-    'UPDATE produtos SET nome = ?, descricao = ?, preco = ? WHERE id = ?',
-    [nome, descricao, preco, id],
-    function (err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.json({ changes: this.changes });
-    }
-  );
+  const produtoIndex = produtos.findIndex((produto) => produto.id === id);
+
+  if (produtoIndex === -1) {
+    res.status(404).json({ error: 'Produto não encontrado' });
+    return;
+  }
+
+  produtos[produtoIndex] = {
+    id: Number(id),
+    nome,
+    descricao,
+    preco,
+  };
+
+  res.json({ changes: 1 });
 });
 
 app.delete('/produtos/:id', (req, res) => {
   const { id } = req.params;
 
-  db.run('DELETE FROM produtos WHERE id = ?', id, function (err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({ changes: this.changes });
-  });
+  const produtoIndex = produtos.findIndex((produto) => produto.id === id);
+
+  if (produtoIndex === -1) {
+    res.status(404).json({ error: 'Produto não encontrado' });
+    return;
+  }
+
+  produtos.splice(produtoIndex, 1);
+
+  res.json({ changes: 1 });
 });
 
 module.exports = app;
-

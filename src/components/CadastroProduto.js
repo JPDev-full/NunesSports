@@ -1,6 +1,7 @@
 // src/components/CadastroProduto.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ProdutoList from './ProdutoList';
 import './CadastroProduto.css';
 
 const CadastroProduto = () => {
@@ -31,9 +32,7 @@ const CadastroProduto = () => {
         descricao,
         preco,
       });
-      setNome('');
-      setDescricao('');
-      setPreco('');
+      resetForm();
       fetchData();
     } catch (error) {
       console.error('Erro ao adicionar produto:', error);
@@ -51,9 +50,7 @@ const CadastroProduto = () => {
         descricao,
         preco,
       });
-      setNome('');
-      setDescricao('');
-      setPreco('');
+      resetForm();
       setEditingId(null);
       fetchData();
     } catch (error) {
@@ -68,6 +65,12 @@ const CadastroProduto = () => {
     } catch (error) {
       console.error('Erro ao excluir produto:', error);
     }
+  };
+
+  const resetForm = () => {
+    setNome('');
+    setDescricao('');
+    setPreco('');
   };
 
   return (
@@ -96,29 +99,7 @@ const CadastroProduto = () => {
       <button onClick={() => setShowProdutos(!showProdutos)}>
         {showProdutos ? 'Ocultar Produtos' : 'Listar Produtos'}
       </button>
-      {showProdutos && produtos.length > 0 && (
-        <div>
-          <h3>Produtos Cadastrados:</h3>
-          {produtos.map((produto) => (
-            <div className="item-box" key={produto.id}>
-              <div>
-                <strong>Nome:</strong> {produto.nome}
-              </div>
-              <div>
-                <strong>Descrição:</strong> {produto.descricao}
-              </div>
-              <div>
-                <strong>Preço:</strong> R$ {produto.preco}
-              </div>
-              <button onClick={() => handleEditProduto(produto.id)} disabled={editingId !== null}>
-                Editar
-              </button>
-              <button onClick={() => handleDeleteProduto(produto.id)}>Excluir</button>
-              <hr />
-            </div>
-          ))}
-        </div>
-      )}
+      {showProdutos && produtos.length > 0 && <ProdutoList produtos={produtos} handleEditProduto={handleEditProduto} handleDeleteProduto={handleDeleteProduto} editingId={editingId} />}
     </div>
   );
 };
